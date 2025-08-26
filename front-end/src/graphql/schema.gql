@@ -7,7 +7,6 @@ type Activity {
   createdAt: DateTime
   description: String!
   id: ID!
-  isFavorite: Boolean!
   name: String!
   owner: User!
   price: Int!
@@ -30,7 +29,6 @@ type Mutation {
   login(signInInput: SignInInput!): SignInDto!
   logout: Boolean!
   register(signUpInput: SignUpInput!): User!
-  updateActivityFavorite(favorite: Boolean!, id: ID!): Activity!
 }
 
 type Query {
