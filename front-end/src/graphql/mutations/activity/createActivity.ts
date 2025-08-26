@@ -8,6 +8,7 @@ const CreateActivity = gql`
       description
       name
       price
+      createdAt
       owner {
         firstName
         lastName

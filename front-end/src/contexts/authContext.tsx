@@ -15,7 +15,7 @@ import Signin from "@/graphql/mutations/auth/signin";
 import Signup from "@/graphql/mutations/auth/signup";
 import GetUser from "@/graphql/queries/auth/getUser";
 import { useSnackbar } from "@/hooks";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation, useApolloClient } from "@apollo/client";
 import { useRouter } from "next/router";
 import { createContext, useEffect, useState } from "react";
 
@@ -41,6 +41,7 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const snackbar = useSnackbar();
+  const client = useApolloClient();
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<GetUserQuery["getMe"] | null>(null);
   const router = useRouter();
@@ -68,6 +69,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const response = await signin({ variables: { signInInput: input } });
       const token = response.data?.login?.access_token || "";
       localStorage.setItem("token", token);
+      await client.clearStore();
       await getUser().then((res) => setUser(res.data?.getMe || null));
       router.push("/profil");
     } catch (err) {
@@ -95,6 +97,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       await logout();
       localStorage.removeItem("token");
       setUser(null);
+      await client.stop();
+      await client.clearStore();
+      client.cache.reset();
       router.push("/");
     } catch (err) {
       snackbar.error("Une erreur est survenue");

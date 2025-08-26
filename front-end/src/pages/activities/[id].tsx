@@ -1,11 +1,11 @@
-import { PageTitle } from "@/components";
+import { PageTitle, FavoriteButton } from "@/components";
 import { graphqlClient } from "@/graphql/apollo";
 import {
   GetActivityQuery,
   GetActivityQueryVariables,
 } from "@/graphql/generated/types";
 import GetActivity from "@/graphql/queries/activity/getActivity";
-import { Badge, Flex, Grid, Group, Image, Text } from "@mantine/core";
+import { Badge, Flex, Grid, Group, Image, Text, Box } from "@mantine/core";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -40,13 +40,17 @@ export default function ActivityDetails({ activity }: ActivityDetailsProps) {
       <PageTitle title={activity.name} prevPath={router.back} />
       <Grid>
         <Grid.Col span={7}>
-          <Image
-            src="https://dummyimage.com/640x4:3"
-            radius="md"
-            alt="random image of city"
-            width="100%"
-            height="400"
-          />
+          <Box sx={{ position: "relative" }}>
+            <Image
+              src="https://dummyimage.com/640x4:3"
+              radius="md"
+              alt="random image of city"
+              width="100%"
+              height="400"
+              style={{ display: "block" }}
+            />
+            <FavoriteButton id={activity.id} size={50} isFavorite={activity.isFavorite} />
+          </Box>
         </Grid.Col>
         <Grid.Col span={5}>
           <Flex direction="column" gap="md">

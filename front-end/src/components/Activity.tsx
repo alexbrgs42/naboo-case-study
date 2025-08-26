@@ -1,7 +1,9 @@
 import { ActivityFragment } from "@/graphql/generated/types";
 import { useGlobalStyles } from "@/utils";
-import { Badge, Button, Card, Grid, Group, Image, Text } from "@mantine/core";
+import { Badge, Button, Card, Grid, Group, Image, Text, Box } from "@mantine/core";
 import Link from "next/link";
+import { FavoriteButton } from "./FavoriteButton";
+import { CreationDate } from "./CreationDate";
 
 interface ActivityProps {
   activity: ActivityFragment;
@@ -14,11 +16,15 @@ export function Activity({ activity }: ActivityProps) {
     <Grid.Col span={4}>
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <Card.Section>
-          <Image
-            src="https://dummyimage.com/480x4:3"
-            height={160}
-            alt="random image of city"
-          />
+          <Box sx={{ position: "relative" }}>
+            <Image
+              src="https://dummyimage.com/480x4:3"
+              height={160}
+              alt="random image of city"
+              style={{ display: "block" }}
+            />
+            <FavoriteButton id={activity.id} size={160 / 4} isFavorite={activity.isFavorite} />
+          </Box>
         </Card.Section>
 
         <Group position="apart" mt="md" mb="xs">
@@ -26,6 +32,7 @@ export function Activity({ activity }: ActivityProps) {
             {activity.name}
           </Text>
         </Group>
+        <CreationDate createdAt={activity.createdAt}/>
 
         <Group mt="md" mb="xs">
           <Badge color="pink" variant="light">
