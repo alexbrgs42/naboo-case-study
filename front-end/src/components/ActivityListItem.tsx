@@ -3,6 +3,8 @@ import { useGlobalStyles } from "@/utils";
 import { Box, Button, Flex, Image, Text } from "@mantine/core";
 import Link from "next/link";
 import { FavoriteButton } from "./FavoriteButton";
+import { CreationDate } from "./CreationDate";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ActivityListItemProps {
   activity: ActivityFragment;
@@ -10,6 +12,7 @@ interface ActivityListItemProps {
 
 export function ActivityListItem({ activity }: ActivityListItemProps) {
   const { classes } = useGlobalStyles();
+  const { user } = useAuth();
 
   return (
     <Flex align="center" justify="space-between">
@@ -23,7 +26,9 @@ export function ActivityListItem({ activity }: ActivityListItemProps) {
             width="125"
             style={{ display: "block" }}
           />
-          <FavoriteButton id={activity.id} size={125 / 4} isFavorite={activity.isFavorite} />
+            {user &&
+              <FavoriteButton id={activity.id} size={37} isFavorite={user.favorites} />
+            }
         </Box>
         <Box sx={{ maxWidth: "300px" }}>
           <Text className={classes.ellipsis}>{activity.city}</Text>
@@ -33,6 +38,7 @@ export function ActivityListItem({ activity }: ActivityListItemProps) {
             weight="bold"
             className={classes.ellipsis}
           >{`${activity.price}€/j`}</Text>
+          <CreationDate createdAt={activity.createdAt} />
         </Box>
       </Flex>
       <Link href={`/activities/${activity.id}`} className={classes.link}>

@@ -3,6 +3,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './user.schema';
 import { UserService } from './user.service';
 import { Activity, ActivitySchema } from 'src/activity/activity.schema';
+import { UserResolver } from './user.resolver';
+import { ActivityService } from 'src/activity/activity.service';
 
 @Module({
   imports: [
@@ -12,6 +14,6 @@ import { Activity, ActivitySchema } from 'src/activity/activity.schema';
     ]),
   ],
   exports: [UserService],
-  providers: [UserService],
+  providers: [UserService, UserResolver, ActivityService],
 })
 export class UserModule {}

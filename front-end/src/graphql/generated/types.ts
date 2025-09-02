@@ -41,6 +41,8 @@ export type Mutation = {
   login: SignInDto;
   logout: Scalars['Boolean']['output'];
   register: User;
+  reorderFavorites: User;
+  updateFavorite: User;
 };
 
 
@@ -58,6 +60,16 @@ export type MutationRegisterArgs = {
   signUpInput: SignUpInput;
 };
 
+
+export type MutationReorderFavoritesArgs = {
+  favorites: Array<Scalars['String']['input']>;
+};
+
+
+export type MutationUpdateFavoriteArgs = {
+  activityId: Scalars['ID']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getActivities: Array<Activity>;
@@ -65,6 +77,7 @@ export type Query = {
   getActivitiesByUser: Array<Activity>;
   getActivity: Activity;
   getCities: Array<Scalars['String']['output']>;
+  getFavorites: Array<Activity>;
   getLatestActivities: Array<Activity>;
   getMe: User;
 };
@@ -101,6 +114,7 @@ export type SignUpInput = {
 export type User = {
   __typename?: 'User';
   email: Scalars['String']['output'];
+  favorites?: Maybe<Array<Scalars['ID']['output']>>;
   firstName: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   lastName: Scalars['String']['output'];
@@ -138,6 +152,20 @@ export type SignupMutationVariables = Exact<{
 
 export type SignupMutation = { __typename?: 'Mutation', register: { __typename?: 'User', id: string, email: string, firstName: string, lastName: string } };
 
+export type ReorderFavoritesMutationVariables = Exact<{
+  favorites: Array<Scalars['String']['input']> | Scalars['String']['input'];
+}>;
+
+
+export type ReorderFavoritesMutation = { __typename?: 'Mutation', reorderFavorites: { __typename?: 'User', id: string, favorites?: Array<string> | null } };
+
+export type UpdateFavoriteMutationVariables = Exact<{
+  activityId: Scalars['ID']['input'];
+}>;
+
+
+export type UpdateFavoriteMutation = { __typename?: 'Mutation', updateFavorite: { __typename?: 'User', id: string, favorites?: Array<string> | null } };
+
 export type GetActivitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -169,10 +197,15 @@ export type GetUserActivitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetUserActivitiesQuery = { __typename?: 'Query', getActivitiesByUser: Array<{ __typename?: 'Activity', id: string, city: string, description: string, name: string, price: number, createdAt?: any | null, owner: { __typename?: 'User', firstName: string, lastName: string } }> };
 
+export type GetFavoritesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetFavoritesQuery = { __typename?: 'Query', getFavorites: Array<{ __typename?: 'Activity', id: string, city: string, description: string, name: string, price: number, createdAt?: any | null, owner: { __typename?: 'User', firstName: string, lastName: string } }> };
+
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getMe: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, role: string } };
+export type GetUserQuery = { __typename?: 'Query', getMe: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, role: string, favorites?: Array<string> | null } };
 
 export type GetCitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -302,6 +335,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   login?: Resolver<ResolversTypes['SignInDto'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'signInInput'>>;
   logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   register?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'signUpInput'>>;
+  reorderFavorites?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationReorderFavoritesArgs, 'favorites'>>;
+  updateFavorite?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateFavoriteArgs, 'activityId'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -310,6 +345,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getActivitiesByUser?: Resolver<Array<ResolversTypes['Activity']>, ParentType, ContextType>;
   getActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<QueryGetActivityArgs, 'id'>>;
   getCities?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  getFavorites?: Resolver<Array<ResolversTypes['Activity']>, ParentType, ContextType>;
   getLatestActivities?: Resolver<Array<ResolversTypes['Activity']>, ParentType, ContextType>;
   getMe?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
 };
@@ -321,6 +357,7 @@ export type SignInDtoResolvers<ContextType = any, ParentType extends ResolversPa
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  favorites?: Resolver<Maybe<Array<ResolversTypes['ID']>>, ParentType, ContextType>;
   firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

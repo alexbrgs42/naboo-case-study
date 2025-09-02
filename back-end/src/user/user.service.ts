@@ -3,6 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { SignUpInput } from 'src/auth/types';
 import { User } from './user.schema';
+import { Activity } from 'src/activity/activity.schema';
+import { ActivityService } from 'src/activity/activity.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -10,6 +12,7 @@ export class UserService {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,
+    private activityService: ActivityService,
   ) {}
 
   async getByEmail(email: string): Promise<User> {
@@ -72,6 +75,22 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
+    return user;
+  }
+
+  async findFavorites(userId: string): Promise<Activity[]> {
+    const user = await this.getById(userId);
+    const favoriteIds = [...user.favorites];
+    const favoriteActivities = await Promise.all(
+      favoriteIds.map((favorite) => this.activityService.findOne(favorite)),
+    );
+    return favoriteActivities;
+  }
+
+  async reorderFavorites(userId: string, favorites: string[]): Promise<User> {
+    const user = await this.getById(userId);
+    user.favorites = favorites;
+    await user.save();
     return user;
   }
 }

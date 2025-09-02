@@ -9,6 +9,8 @@ import { Badge, Flex, Grid, Group, Image, Text, Box } from "@mantine/core";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { CreationDate } from "@/components";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ActivityDetailsProps {
   activity: GetActivityQuery["getActivity"];
@@ -31,6 +33,7 @@ export const getServerSideProps: GetServerSideProps<
 
 export default function ActivityDetails({ activity }: ActivityDetailsProps) {
   const router = useRouter();
+  const { user } = useAuth();
 
   return (
     <>
@@ -49,7 +52,9 @@ export default function ActivityDetails({ activity }: ActivityDetailsProps) {
               height="400"
               style={{ display: "block" }}
             />
-            <FavoriteButton id={activity.id} size={50} isFavorite={activity.isFavorite} />
+            {user &&
+              <FavoriteButton id={activity.id} size={50} isFavorite={user.favorites} />
+            }
           </Box>
         </Grid.Col>
         <Grid.Col span={5}>
@@ -65,6 +70,7 @@ export default function ActivityDetails({ activity }: ActivityDetailsProps) {
             <Text size="sm">{activity.description}</Text>
             <Text size="sm" color="dimmed">
               Ajouté par {activity.owner.firstName} {activity.owner.lastName}
+              <CreationDate createdAt={activity.createdAt} />
             </Text>
           </Flex>
         </Grid.Col>

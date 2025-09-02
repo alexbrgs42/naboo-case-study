@@ -9,6 +9,7 @@ interface CreationDateProps {
 export function CreationDate({ createdAt }: CreationDateProps) {
   const { user } = useAuth();
   const [shouldShowDate, setShouldShowDate] = useState(user?.role === 'admin');
+  const date = new Date(createdAt).toLocaleString().split(' ');
 
   useEffect(() => {
     if (user && user?.role) {
@@ -19,7 +20,7 @@ export function CreationDate({ createdAt }: CreationDateProps) {
   return (
     <Text size="sm" color="dimmed">
       {shouldShowDate && (
-      new Date(createdAt).toLocaleString()
+        `Le ${date[0]} à ${date[1]}`
       )}
     </Text>
   );

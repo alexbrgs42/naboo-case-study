@@ -4,13 +4,16 @@ import { Badge, Button, Card, Grid, Group, Image, Text, Box } from "@mantine/cor
 import Link from "next/link";
 import { FavoriteButton } from "./FavoriteButton";
 import { CreationDate } from "./CreationDate";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ActivityProps {
   activity: ActivityFragment;
+  onFavoriteClick: (activityId: string) => void;
 }
 
-export function Activity({ activity }: ActivityProps) {
+export function Activity({ activity , onFavoriteClick}: ActivityProps) {
   const { classes } = useGlobalStyles();
+  const { user } = useAuth();
 
   return (
     <Grid.Col span={4}>
@@ -23,7 +26,9 @@ export function Activity({ activity }: ActivityProps) {
               alt="random image of city"
               style={{ display: "block" }}
             />
-            <FavoriteButton id={activity.id} size={160 / 4} isFavorite={activity.isFavorite} />
+            {user &&
+              <FavoriteButton id={activity.id} size={40} isFavorite={user.favorites} onClick={onFavoriteClick} />
+            }
           </Box>
         </Card.Section>
 
@@ -32,7 +37,6 @@ export function Activity({ activity }: ActivityProps) {
             {activity.name}
           </Text>
         </Group>
-        <CreationDate createdAt={activity.createdAt}/>
 
         <Group mt="md" mb="xs">
           <Badge color="pink" variant="light">
@@ -46,6 +50,7 @@ export function Activity({ activity }: ActivityProps) {
         <Text size="sm" color="dimmed" className={classes.ellipsis}>
           {activity.description}
         </Text>
+        <CreationDate createdAt={activity.createdAt}/>
 
         <Link href={`/activities/${activity.id}`} className={classes.link}>
           <Button variant="light" color="blue" fullWidth mt="md" radius="md">

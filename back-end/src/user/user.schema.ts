@@ -30,6 +30,10 @@ export class User extends Document {
 
   @Prop()
   token?: string;
+
+  @Field(() => [ID], { nullable: true })
+  @Prop({ type: [String], default: [] })
+  favorites!: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
